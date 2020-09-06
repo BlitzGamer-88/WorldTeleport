@@ -14,11 +14,14 @@ internal object Config : SettingsHolder {
     @Comment("Permission that is needed to set a world's teleport location.")
     val worldSetTeleportPermission: Property<String> = PropertyInitializer.newProperty("worldSetTeleportPermission", "worldteleport.setlocation")
     @JvmField
+    @Comment("When a player has this permission he will be able to remove saved locations")
+    val worldRemoveTeleportPermission: Property<String> = PropertyInitializer.newProperty("worldRemoveTeleportPermission", "worldteleport.removelocation")
+    @JvmField
     @Comment("When a player has this permission he will not be able to get teleported when someone uses \"/worldtp teleport <target>\" on him.")
     val bypassTeleportPermission: Property<String> = PropertyInitializer.newProperty("bypassTeleportPermission", "worldteleport.bypass")
     @JvmField
     @Comment("When a player has this permission he will be able to reload the locations file.")
-    val locationsReloadPermission: Property<String> = PropertyInitializer.newProperty("locationsReloadPermission", "worldteleport.reload")
+    val reloadPermission: Property<String> = PropertyInitializer.newProperty("reloadPermission", "worldteleport.reload")
 
     @JvmField
     val locationRemovedSuccessfully: Property<String> = PropertyInitializer.newProperty("locationRemovedSuccessfully", "&aThe teleport location has been removed successfully.")
@@ -34,6 +37,10 @@ internal object Config : SettingsHolder {
     val targetTeleportedSuccessfully: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfully", "&a%player_name% has been teleported successfully.")
     @JvmField
     val targetTeleportedSuccessfullyWorldSpawn: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfullyWorldSpawn", "&aNo teleport location has been found for this world so %player_name% has been teleported at that world's spawnpoint.")
+    @JvmField
+    val noWorldSpecified: Property<String> = PropertyInitializer.newProperty("noWorldSpecified", "&cYou need to specify a world name.")
+    @JvmField
+    val noLocationSavedInThatWorld: Property<String> = PropertyInitializer.newProperty("noLocationSavedInThatWorld", "&cThere is no location saved in this world.")
     @JvmField
     val wrongWorldName: Property<String> = PropertyInitializer.newProperty("wrongWorldName", "&cWrong world name!")
     @JvmField
