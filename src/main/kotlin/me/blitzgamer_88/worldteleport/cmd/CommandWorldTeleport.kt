@@ -11,11 +11,6 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-
-// TODO: SAVE LOCATIONS TO A DATABASE (IF POSSIBLE SQL/SQLITE - IF NOT THEN YAML)
-
-
-
 @Command("worldtp")
 @Alias("wtp")
 class CommandWorldTeleport(private val mainClass: WorldTeleport) : CommandBase() {

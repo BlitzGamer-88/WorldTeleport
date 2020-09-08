@@ -3,7 +3,9 @@ package me.blitzgamer_88.worldteleport
 import ch.jalu.configme.SettingsManager
 import me.blitzgamer_88.worldteleport.cmd.CommandWorldTeleport
 import me.blitzgamer_88.worldteleport.conf.WorldTeleportConfiguration
+import me.blitzgamer_88.worldteleport.placeholders.WorldTeleportPlaceholders
 import me.bristermitten.pdm.PDMBuilder
+import me.clip.placeholderapi.PlaceholderAPIPlugin
 import me.mattstudios.mf.base.CommandManager
 import org.bukkit.Bukkit
 import org.bukkit.World
@@ -18,7 +20,7 @@ import java.util.logging.Level
 
 class WorldTeleport : JavaPlugin() {
 
-    var conf = null as? SettingsManager?
+    private var conf = null as? SettingsManager?
 
     private fun loadConfig() {
         val file = this.dataFolder.resolve("config.yml")
@@ -87,6 +89,9 @@ class WorldTeleport : JavaPlugin() {
             Bukkit.getPluginManager().disablePlugin(this)
 
         }
+
+        val papi = WorldTeleportPlaceholders(this)
+        papi.register()
 
         val cmdManager = CommandManager(this, true)
         cmdManager.completionHandler.register("#worlds") { Bukkit.getWorlds().map(World::getName) }
