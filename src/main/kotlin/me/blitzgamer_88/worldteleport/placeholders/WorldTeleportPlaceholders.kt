@@ -1,11 +1,9 @@
 package me.blitzgamer_88.worldteleport.placeholders
 
 import me.blitzgamer_88.worldteleport.WorldTeleport
-import me.clip.placeholderapi.PlaceholderAPIPlugin
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
-import org.bukkit.entity.Player
 
 class WorldTeleportPlaceholders(private val mainClass: WorldTeleport) : PlaceholderExpansion() {
 
@@ -19,15 +17,11 @@ class WorldTeleportPlaceholders(private val mainClass: WorldTeleport) : Placehol
     }
 
     override fun getVersion(): String {
-        return "0.0.3"
+        return "0.0.4"
     }
 
     override fun persist(): Boolean {
         return true
-    }
-
-    private fun formatBoolean(b: Boolean): String? {
-        return if (b) PlaceholderAPIPlugin.booleanTrue() else PlaceholderAPIPlugin.booleanFalse()
     }
 
     override fun onRequest(player: OfflinePlayer, input: String): String? {

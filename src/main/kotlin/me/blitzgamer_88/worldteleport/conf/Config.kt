@@ -8,6 +8,10 @@ import ch.jalu.configme.properties.PropertyInitializer
 internal object Config : SettingsHolder {
 
     @JvmField
+    @Comment("If this is enabled the plugin will check if the player has his spawnpoint", "set in that world and teleport him there instead of the world spawnpoint or the saved location.")
+    val checkForBed: Property<Boolean> = PropertyInitializer.newProperty("checkForBed", false)
+
+    @JvmField
     @Comment("Permission that is needed to use the world teleport command.")
     val worldTeleportPermission: Property<String> = PropertyInitializer.newProperty("worldTeleportPermission", "worldteleport.teleport")
     @JvmField
@@ -34,9 +38,13 @@ internal object Config : SettingsHolder {
     @JvmField
     val teleportedSuccessfullyWorldSpawn: Property<String> = PropertyInitializer.newProperty("teleportedSuccessfullyWorldSpawn", "&aNo teleport location has been found for this world so you have been teleported at that world's spawnpoint.")
     @JvmField
+    val teleportedSuccessfullyBedLocation: Property<String> = PropertyInitializer.newProperty("teleportedSuccessfullyBedLocation", "&aNo teleport location has been found for this world so you have been teleported at your bed spawnpoint.")
+    @JvmField
     val targetTeleportedSuccessfully: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfully", "&a%player_name% has been teleported successfully.")
     @JvmField
     val targetTeleportedSuccessfullyWorldSpawn: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfullyWorldSpawn", "&aNo teleport location has been found for this world so %player_name% has been teleported at that world's spawnpoint.")
+    @JvmField
+    val targetTeleportedSuccessfullyBedLocation: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfullyBedLocation", "&aNo teleport location has been found for this world so %player_name% has been teleported at this bed spawnpoint.")
     @JvmField
     val noWorldSpecified: Property<String> = PropertyInitializer.newProperty("noWorldSpecified", "&cYou need to specify a world name.")
     @JvmField
