@@ -12,6 +12,10 @@ internal object Config : SettingsHolder {
     val checkForBed: Property<Boolean> = PropertyInitializer.newProperty("checkForBed", false)
 
     @JvmField
+    @Comment("Specify every how many seconds the placeholders are updated")
+    val placeholdersUpdateCooldown: Property<Int> = PropertyInitializer.newProperty("placeholdersUpdateCooldown", 60)
+
+    @JvmField
     @Comment("Permission that is needed to use the world teleport command.")
     val worldTeleportPermission: Property<String> = PropertyInitializer.newProperty("worldTeleportPermission", "worldteleport.teleport")
     @JvmField

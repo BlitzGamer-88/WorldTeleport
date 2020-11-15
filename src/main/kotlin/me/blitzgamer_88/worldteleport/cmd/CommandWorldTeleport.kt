@@ -42,88 +42,24 @@ class CommandWorldTeleport(private val mainClass: WorldTeleport) : CommandBase()
         val teleportedSuccessfullyBedLocation = conf().getProperty(Config.teleportedSuccessfullyBedLocation).color()
         val targetTeleportedSuccessfullyBedLocation = conf().getProperty(Config.targetTeleportedSuccessfullyBedLocation).color()
 
-        if (sender is Player) {
+        val player = target ?: sender
 
-            val perWorldTeleportPermission = "worldteleport.teleport.$worldName"
-
-            // Checks for command usage permission.
-
-            if (!sender.hasPermission(worldTeleportPermission) && !sender.hasPermission(perWorldTeleportPermission)){
-                noPermission.msg(sender)
-                return
-            }
-
-            // Checks if world exists.
-
-            val world = Bukkit.getServer().getWorld(worldName)
-            if (world == null) {
-                wrongWorldName.msg(sender)
-                return
-            }
-
-            // Checks for target.
-
-            if (target == null) {
-                val loc = mainClass.getLocationsConfig()?.getLocation(worldName)
-                val bedLocation = sender.bedSpawnLocation
-                if (checkForBed && bedLocation != null) {
-                    val bedWorld = bedLocation.world
-                    if (bedWorld != null && bedWorld == world) {
-                        PaperLib.teleportAsync(sender, bedLocation)
-                        teleportedSuccessfullyBedLocation.msg(sender)
-                        return
-                    }
-                }
-                if (loc == null) {
-                    PaperLib.teleportAsync(sender, world.spawnLocation)
-                    teleportedSuccessfullyWorldSpawn.msg(sender)
-                    return
-                }
-                PaperLib.teleportAsync(sender, loc)
-                teleportedSuccessfully.msg(sender)
-                return
-            }
-
-            // Checks for bypass permissions.
-
-            if(target.hasPermission(bypassTeleportPermission)){
-                sender.sendMessage(PlaceholderAPI.setPlaceholders(target, couldNotTeleportTarget))
-                return
-            }
-
-            // Checks if there is a teleport location for the world.
-
-            val bedLocation = target.bedSpawnLocation
-            if (checkForBed && bedLocation != null) {
-                val bedWorld = bedLocation.world
-                if (bedWorld != null && bedWorld == world) {
-                    PaperLib.teleportAsync(target, world.spawnLocation)
-                    sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfullyBedLocation))
-                    return
-                }
-            }
-            val loc = mainClass.getLocationsConfig()?.getLocation(worldName)
-            if (loc == null){
-                PaperLib.teleportAsync(target, world.spawnLocation)
-                sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfullyWorldSpawn))
-                return
-            }
-            PaperLib.teleportAsync(target, loc)
-            sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfully))
-            return
-        }
-
-
-        // IF SENDER IS NOT PLAYER
-
-        // Checks for target.
-
-        if (target == null) {
+        if (player !is Player) {
             "&cUse: &f/worldtp teleport <world> <player>".msg(sender)
             return
         }
 
-        // Checks if world exists.
+        val perWorldTeleportPermission = "worldteleport.teleport.$worldName"
+
+        if (sender != player && sender is Player && !sender.hasPermission(worldTeleportPermission) && !sender.hasPermission(perWorldTeleportPermission)){
+            noPermission.msg(sender)
+            return
+        }
+
+        if(player == target && player.hasPermission(bypassTeleportPermission)){
+            sender.sendMessage(PlaceholderAPI.setPlaceholders(target, couldNotTeleportTarget))
+            return
+        }
 
         val world = Bukkit.getServer().getWorld(worldName)
         if (world == null) {
@@ -131,33 +67,29 @@ class CommandWorldTeleport(private val mainClass: WorldTeleport) : CommandBase()
             return
         }
 
-        // Checks for bypass permissions.
+        val loc = mainClass.getLocationsConfig()?.getLocation(worldName)
+        val bedLocation = player.bedSpawnLocation
 
-        if(target.hasPermission(bypassTeleportPermission)){
-            sender.sendMessage(PlaceholderAPI.setPlaceholders(target, couldNotTeleportTarget))
-            return
-        }
-
-        // Checks if there is a teleport location for the world.
-
-        val bedLocation = target.bedSpawnLocation
         if (checkForBed && bedLocation != null) {
             val bedWorld = bedLocation.world
             if (bedWorld != null && bedWorld == world) {
-                PaperLib.teleportAsync(target, world.spawnLocation)
-                sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfullyBedLocation))
+                PaperLib.teleportAsync(player, bedLocation)
+                if (player == sender) teleportedSuccessfullyBedLocation.msg(sender)
+                else sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfullyBedLocation))
                 return
             }
         }
 
-        val loc = mainClass.getLocationsConfig()?.getLocation(worldName)
         if (loc == null) {
-            PaperLib.teleportAsync(target, world.spawnLocation)
-            sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfullyWorldSpawn))
+            PaperLib.teleportAsync(player, world.spawnLocation)
+            if (player == sender) teleportedSuccessfullyWorldSpawn.msg(sender)
+            else sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfullyWorldSpawn))
             return
         }
-        PaperLib.teleportAsync(target, loc)
-        sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfully))
+        PaperLib.teleportAsync(player, loc)
+        if (player == sender) teleportedSuccessfully.msg(sender)
+        else sender.sendMessage(PlaceholderAPI.setPlaceholders(target, targetTeleportedSuccessfully))
+        return
     }
 
 
@@ -191,41 +123,27 @@ class CommandWorldTeleport(private val mainClass: WorldTeleport) : CommandBase()
         val noWorldSpecified = conf().getProperty(Config.noWorldSpecified).color()
         val noLocationSavedInThatWorld = conf().getProperty(Config.noLocationSavedInThatWorld).color()
 
-        if (sender is Player) {
+        val permWorld = if (worldName == null && sender is Player) sender.world.name else worldName
 
-            val senderWorldName = sender.world.name
-            val permWorld = worldName ?: senderWorldName
-
-            val perWorldRemovePermission = "worldteleport.removelocation.$permWorld"
-
-            if (!sender.hasPermission(worldRemoveTeleportPermission) && !sender.hasPermission(perWorldRemovePermission)) {
-                noPermission.msg(sender)
-                return
-            }
-            if (mainClass.getLocationsConfig()?.getLocation(permWorld) != null) {
-                mainClass.getLocationsConfig()?.set(permWorld, null)
-                mainClass.saveLocationsConfig()
-                locationRemovedSuccessfully.msg(sender)
-                return
-            }
-            noLocationSavedInThatWorld.msg(sender)
-            return
-        }
-
-        if (worldName == null){
+        if (permWorld == null && sender !is Player) {
             noWorldSpecified.msg(sender)
             return
         }
 
-        if (mainClass.getLocationsConfig()?.getLocation(worldName) != null) {
-            mainClass.getLocationsConfig()?.set(worldName, null)
-            mainClass.saveLocationsConfig()
-            sender.sendMessage(locationRemovedSuccessfully)
-            return
-        } else {
-            sender.sendMessage(noLocationSavedInThatWorld)
+        val perWorldRemovePermission = "worldteleport.removelocation.$permWorld"
+        if (sender is Player && !sender.hasPermission(worldRemoveTeleportPermission) && !sender.hasPermission(perWorldRemovePermission)) {
+            noPermission.msg(sender)
             return
         }
+
+        val loc = permWorld?.let { mainClass.getLocationsConfig()?.getLocation(it) }
+        if (loc == null) {
+            noLocationSavedInThatWorld.msg(sender)
+            return
+        }
+        mainClass.getLocationsConfig()?.set(permWorld, null)
+        mainClass.saveLocationsConfig()
+        locationRemovedSuccessfully.msg(sender)
     }
 
     @SubCommand("reload")
@@ -241,6 +159,6 @@ class CommandWorldTeleport(private val mainClass: WorldTeleport) : CommandBase()
         }
         mainClass.reloadLocationsConfig()
         conf().reload()
-        sender.sendMessage(pluginReloaded)
+        pluginReloaded.msg(sender)
     }
 }

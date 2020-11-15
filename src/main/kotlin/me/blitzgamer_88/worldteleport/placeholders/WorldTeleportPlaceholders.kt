@@ -17,14 +17,16 @@ class WorldTeleportPlaceholders(private val mainClass: WorldTeleport) : Placehol
     }
 
     override fun getVersion(): String {
-        return "0.0.4"
+        return "0.0.5"
     }
 
     override fun persist(): Boolean {
         return true
     }
 
-    override fun onRequest(player: OfflinePlayer, input: String): String? {
+    override fun onRequest(offlinePlayer: OfflinePlayer, input: String): String? {
+
+        val locations = mainClass.savedLocations
 
         when {
 
@@ -32,13 +34,9 @@ class WorldTeleportPlaceholders(private val mainClass: WorldTeleport) : Placehol
 
                 if (input == "location") {
 
-                    if (!player.isOnline) {
-                        return ""
-                    }
-
-                    val newPlayer = player.player!!
-                    val worldName = newPlayer.world.name
-                    val loc = mainClass.getLocationsConfig()?.getLocation(worldName) ?: return ""
+                    val player = offlinePlayer.player ?: return ""
+                    val worldName = player.world.name
+                    val loc = locations[worldName] ?: return ""
                     return "${loc.x} ${loc.y} ${loc.z}"
                 }
 
@@ -47,8 +45,8 @@ class WorldTeleportPlaceholders(private val mainClass: WorldTeleport) : Placehol
                     return null
                 }
 
-                val world = Bukkit.getWorld(args[1]) ?: return null
-                val loc = mainClass.getLocationsConfig()?.getLocation(world.name) ?: return ""
+                val world = Bukkit.getWorld(args[1]) ?: return ""
+                val loc = locations[world.name] ?: return ""
                 return "${loc.x} ${loc.y} ${loc.z}"
 
             }
