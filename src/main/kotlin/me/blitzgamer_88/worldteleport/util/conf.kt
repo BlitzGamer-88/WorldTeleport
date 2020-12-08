@@ -4,7 +4,7 @@ import ch.jalu.configme.SettingsManager
 import me.blitzgamer_88.worldteleport.WorldTeleport
 import me.blitzgamer_88.worldteleport.conf.WorldTeleportConfiguration
 
-var conf = null as? SettingsManager?
+private var conf = null as? SettingsManager?
 
 fun loadConfig(plugin: WorldTeleport) {
     val file = plugin.dataFolder.resolve("config.yml")

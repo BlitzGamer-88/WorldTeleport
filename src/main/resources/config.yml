@@ -1,0 +1,20 @@
+# If this is enabled the plugin will check if the player has his spawnpoint
+# set in that world and teleport him there instead of the world spawnpoint or the saved location.
+checkForBed: false
+
+# Customize the messages that are sent by the plugin:
+targetNotSpecified: '&cYou need to specify a target!'
+locationRemovedSuccessfully: '&aThe teleport location has been removed successfully.'
+couldNotTeleportTarget: '&cCould not teleport %player_name%.'
+locationSavedSuccessfully: '&aThe new teleport location has been set successfully.'
+teleportedSuccessfully: '&aYou have been teleported successfully.'
+teleportedSuccessfullyWorldSpawn: '&aYou have been teleported at that world''s spawnpoint.'
+teleportedSuccessfullyBedLocation: '&aYou have been teleported at your bed spawnpoint.'
+targetTeleportedSuccessfully: '&a%player_name% has been teleported successfully.'
+targetTeleportedSuccessfullyWorldSpawn: '&a%player_name% has been teleported at that world''s spawnpoint.'
+targetTeleportedSuccessfullyBedLocation: '&a%player_name% has been teleported at this bed spawnpoint.'
+noWorldSpecified: '&cYou need to specify a world name.'
+noLocationSavedInThatWorld: '&cThere is no location saved in this world.'
+wrongWorldName: '&cWrong world name!'
+noPermission: '&cYou do not have permission to do that.'
+pluginReloaded: '&cPlugin reloaded successfully!'

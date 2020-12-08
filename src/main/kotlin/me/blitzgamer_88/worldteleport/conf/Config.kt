@@ -12,25 +12,8 @@ internal object Config : SettingsHolder {
     val checkForBed: Property<Boolean> = PropertyInitializer.newProperty("checkForBed", false)
 
     @JvmField
-    @Comment("Specify every how many seconds the placeholders are updated")
-    val placeholdersUpdateCooldown: Property<Int> = PropertyInitializer.newProperty("placeholdersUpdateCooldown", 60)
-
-    @JvmField
-    @Comment("Permission that is needed to use the world teleport command.")
-    val worldTeleportPermission: Property<String> = PropertyInitializer.newProperty("worldTeleportPermission", "worldteleport.teleport")
-    @JvmField
-    @Comment("Permission that is needed to set a world's teleport location.")
-    val worldSetTeleportPermission: Property<String> = PropertyInitializer.newProperty("worldSetTeleportPermission", "worldteleport.setlocation")
-    @JvmField
-    @Comment("When a player has this permission he will be able to remove saved locations")
-    val worldRemoveTeleportPermission: Property<String> = PropertyInitializer.newProperty("worldRemoveTeleportPermission", "worldteleport.removelocation")
-    @JvmField
-    @Comment("When a player has this permission he will not be able to get teleported when someone uses \"/worldtp teleport <target>\" on him.")
-    val bypassTeleportPermission: Property<String> = PropertyInitializer.newProperty("bypassTeleportPermission", "worldteleport.bypass")
-    @JvmField
-    @Comment("When a player has this permission he will be able to reload the locations file.")
-    val reloadPermission: Property<String> = PropertyInitializer.newProperty("reloadPermission", "worldteleport.reload")
-
+    @Comment("Customize the messages that are sent by the plugin:")
+    val targetNotSpecified: Property<String> = PropertyInitializer.newProperty("targetNotSpecified", "&cYou need to specify a target!")
     @JvmField
     val locationRemovedSuccessfully: Property<String> = PropertyInitializer.newProperty("locationRemovedSuccessfully", "&aThe teleport location has been removed successfully.")
     @JvmField
@@ -40,15 +23,15 @@ internal object Config : SettingsHolder {
     @JvmField
     val teleportedSuccessfully: Property<String> = PropertyInitializer.newProperty("teleportedSuccessfully", "&aYou have been teleported successfully.")
     @JvmField
-    val teleportedSuccessfullyWorldSpawn: Property<String> = PropertyInitializer.newProperty("teleportedSuccessfullyWorldSpawn", "&aNo teleport location has been found for this world so you have been teleported at that world's spawnpoint.")
+    val teleportedSuccessfullyWorldSpawn: Property<String> = PropertyInitializer.newProperty("teleportedSuccessfullyWorldSpawn", "&aYou have been teleported at that world''s spawnpoint.")
     @JvmField
-    val teleportedSuccessfullyBedLocation: Property<String> = PropertyInitializer.newProperty("teleportedSuccessfullyBedLocation", "&aNo teleport location has been found for this world so you have been teleported at your bed spawnpoint.")
+    val teleportedSuccessfullyBedLocation: Property<String> = PropertyInitializer.newProperty("teleportedSuccessfullyBedLocation", "&aYou have been teleported at your bed spawnpoint.")
     @JvmField
     val targetTeleportedSuccessfully: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfully", "&a%player_name% has been teleported successfully.")
     @JvmField
-    val targetTeleportedSuccessfullyWorldSpawn: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfullyWorldSpawn", "&aNo teleport location has been found for this world so %player_name% has been teleported at that world's spawnpoint.")
+    val targetTeleportedSuccessfullyWorldSpawn: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfullyWorldSpawn", "&a%player_name% has been teleported at that world''s spawnpoint.")
     @JvmField
-    val targetTeleportedSuccessfullyBedLocation: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfullyBedLocation", "&aNo teleport location has been found for this world so %player_name% has been teleported at this bed spawnpoint.")
+    val targetTeleportedSuccessfullyBedLocation: Property<String> = PropertyInitializer.newProperty("targetTeleportedSuccessfullyBedLocation", "&a%player_name% has been teleported at this bed spawnpoint.")
     @JvmField
     val noWorldSpecified: Property<String> = PropertyInitializer.newProperty("noWorldSpecified", "&cYou need to specify a world name.")
     @JvmField
