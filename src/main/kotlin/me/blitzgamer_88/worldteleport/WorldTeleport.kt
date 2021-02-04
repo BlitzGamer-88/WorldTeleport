@@ -1,9 +1,12 @@
 package me.blitzgamer_88.worldteleport
 
-import me.blitzgamer_88.worldteleport.cmd.CommandWorldTeleport
+import me.blitzgamer_88.worldteleport.commands.CommandWorldTeleport
 import me.blitzgamer_88.worldteleport.util.*
-import me.bristermitten.pdm.PDMBuilder
+import me.bristermitten.pdm.PluginDependencyManager
+import me.mattstudios.mf.base.CommandBase
 import me.mattstudios.mf.base.CommandManager
+import me.mattstudios.mf.base.components.CompletionResolver
+import me.mattstudios.mf.base.components.MessageResolver
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.configuration.file.FileConfiguration
@@ -13,63 +16,63 @@ import java.io.File
 import java.io.IOException
 import java.util.logging.Level
 
-
 class WorldTeleport : JavaPlugin() {
-
-    private var locations: FileConfiguration? = null
-    private var locationsFile: File? = null
-
-    override fun onLoad() { PDMBuilder(this).build().loadAllDependencies().join() }
+    override fun onLoad() { PluginDependencyManager.of(this).loadAllDependencies() }
+    private lateinit var commandManager: CommandManager
+    private lateinit var locations: FileConfiguration
+    private lateinit var locationsFile: File
 
     override fun onEnable() {
-
         this.saveDefaultConfig()
         loadConfig(this)
+        loadValues(this)
 
-        dependenciesHook()
+        dependenciesHook("PlaceholderAPI")
 
-        registerValues(this)
-        registerCommands()
+        commandManager = CommandManager(this, true)
+        registerMessage("cmd.no.permission") { sender -> noPermission.msg(sender) }
+        registerCompletion("#worlds") { Bukkit.getWorlds().map(World::getName) }
+        registerCommands(CommandWorldTeleport(this))
 
-        "&7[WorldTeleport] Plugin enabled successfully!".log()
+
+        "[WorldTeleport] Plugin enabled successfully!".log()
     }
 
-    override fun onDisable() { "&7[WorldTeleport] Plugin disabled successfully!".log() }
+    override fun onDisable() { "[WorldTeleport] Plugin disabled successfully!".log() }
 
     fun reload() {
-        conf().reload()
-        registerValues(this)
+        conf.reload()
+        loadValues(this)
         reloadLocationsConfig()
     }
 
-    private fun dependenciesHook() {
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
-            "&7Could not find: PlaceholderAPI. Plugin disabled!".log()
+    private fun registerCommands(vararg commands: CommandBase) = commands.forEach(commandManager::register)
+    private fun registerCompletion(completionId: String, resolver: CompletionResolver) = commandManager.completionHandler.register(completionId, resolver)
+    private fun registerMessage(messageId: String, resolver: MessageResolver) = commandManager.messageHandler.register(messageId, resolver)
+
+
+    private fun dependenciesHook(plugin: String) {
+        if (Bukkit.getPluginManager().getPlugin(plugin) == null) {
+            "&7Could not find: $plugin. Plugin disabled!".log()
             Bukkit.getPluginManager().disablePlugin(this)
         }
-        else { "&7Successfully hooked into PlaceholderAPI!".log() }
-    }
-
-    private fun registerCommands() {
-        val cmdManager = CommandManager(this, true)
-        cmdManager.completionHandler.register("#worlds") { Bukkit.getWorlds().map(World::getName) }
-        cmdManager.register(CommandWorldTeleport(this))
+        else { "&7Successfully hooked into $plugin!".log() }
     }
 
 
     private fun reloadLocationsConfig() {
-        if (locationsFile == null) locationsFile = File(dataFolder, "locations.yml")
-        locations = YamlConfiguration.loadConfiguration(locationsFile!!)
+        if (!::locationsFile.isInitialized) locationsFile = File(dataFolder, "locations.yml")
+        locations = YamlConfiguration.loadConfiguration(locationsFile)
     }
 
     fun saveLocationsConfig() {
-        if (locations == null || locationsFile == null) return
-        try { getLocationsConfig()!!.save(locationsFile!!) }
+        if (!::locations.isInitialized || !::locationsFile.isInitialized) reloadLocationsConfig()
+        try { getLocationsConfig().save(locationsFile) }
         catch (ex: IOException) { logger.log(Level.SEVERE, "&7Could not save config to $locationsFile", ex) }
     }
 
-    fun getLocationsConfig(): FileConfiguration? {
-        if (locations == null) reloadLocationsConfig()
+    fun getLocationsConfig(): FileConfiguration {
+        if (!::locations.isInitialized) reloadLocationsConfig()
         return locations
     }
 
